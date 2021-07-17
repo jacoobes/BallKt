@@ -37,7 +37,6 @@ import kotlinx.serialization.json.*
      * body is a string that needs to serialized with class specific serializers
      * kotlinx.serialization.json.decodeFromString()
      */
-
     open suspend fun fetch() : HttpResponse = client.use {
         client.get(baseUrl) {
             accept(Json)

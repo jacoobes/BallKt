@@ -10,5 +10,4 @@ class BallClient {
      val players: Player = Player()
      val games : Game = Game()
 
-
 }

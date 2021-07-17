@@ -1,6 +1,7 @@
 package dev.seren
 
 
+
 interface Cache<T,V> : Map<T, V> {
     override val size: Int
 
