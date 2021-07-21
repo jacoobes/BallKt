@@ -21,3 +21,8 @@ data class PlayerData(
 ) : baseSerializable()
 
 
+@Serializable
+data class PlayerList(
+    val data: List<PlayerData>,
+    val meta: MetaData
+)

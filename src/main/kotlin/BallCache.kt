@@ -2,22 +2,22 @@ package dev.seren
 
 
 
-interface Cache<T,V> : Map<T, V> {
+interface Cache<T,V> : MutableMap<T, V> {
     override val size: Int
 
     operator fun set(key: T, value:V)
 
     override operator fun get(key: T): V?
 
-    fun remove(key: T): V?
+    override fun remove(key: T): V?
 
-    fun clear()
+    override fun clear()
 }
 
 
 class BallCache<T, V> : Cache<T, V> {
 
-    private val cache = hashMapOf<T, V>()
+    private val cache = mutableMapOf<T, V>()
 
     override val size: Int
         get() = cache.size
@@ -32,19 +32,19 @@ class BallCache<T, V> : Cache<T, V> {
     /**
      * Returns a read-only [Set] of all key/value pairs in this map.
      */
-    override val entries: Set<Map.Entry<T, V>>
+    override val entries: MutableSet<MutableMap.MutableEntry<T, V>>
         get() = cache.entries
 
     /**
      * Returns a read-only [Set] of all keys in this map.
      */
-    override val keys: Set<T>
+    override val keys: MutableSet<T>
         get() = cache.keys
 
     /**
      * Returns a read-only [Collection] of all values in this map. Note that this collection may contain duplicate values.
      */
-    override val values: Collection<V>
+    override val values: MutableCollection<V>
         get() = cache.values
 
     /**
@@ -78,6 +78,19 @@ class BallCache<T, V> : Cache<T, V> {
     override fun set(key: T, value: V) {
         TODO("Not yet implemented")
     }
+
+    /**
+     * Associates the specified [value] with the specified [key] in the map.
+     *
+     * @return the previous value associated with the key, or `null` if the key was not present in the map.
+     */
+    override fun put(key: T, value: V): V? = cache.put(key, value)
+
+
+    /**
+     * Updates this map with key/value pairs from the specified map [from].
+     */
+    override fun putAll(from: Map<out T, V>) = cache.putAll(from)
 
 
 }
