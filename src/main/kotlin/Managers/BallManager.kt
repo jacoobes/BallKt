@@ -1,20 +1,17 @@
 package dev.seren.Managers
 
 import io.ktor.client.*
-
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-
 import io.ktor.http.ContentType.Application.Json
 import io.ktor.utils.io.core.*
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
-import java.lang.Error
+
+
 typealias Promise<T> = Deferred<T>
 
 /**
@@ -49,7 +46,7 @@ typealias Promise<T> = Deferred<T>
     /**
      * raw api calls
      * body is a string that needs to serialized with class specific serializers
-     * kotlinx.serialization.json.decodeFromString()
+     * kotlinx.serialization.decodeFromString()
      * @return [HttpResponse]
      *
      */
@@ -59,24 +56,26 @@ typealias Promise<T> = Deferred<T>
         }
     }
 
-    /* *
-     * extracts body of response as [String]
-     * Checks to see if their is an error and throws Respectively
+    /**
+     *
+     * Runs on IO thread for networking calls
+     * Checks to see if their is an error and throws
+     * @returns [String] body of response as a String
      */
+    internal suspend fun <T> extractBody(url: String): String = coroutineScope {
+        async(Dispatchers.IO) {
+            val response = fetch(url)
+            val responseCode = response.status.value
+            errorActionMap[responseCode]?.let { throw Error(it)  }
+            response.readText()
+        }
+    }.await()
 
-    internal suspend fun extractBody(url: String): Promise<String> = withContext(Dispatchers.IO) {
-
-        val responseCode = fetch(url).status.value
-
-        if(errorActionMap[responseCode] != null) throw Error(errorActionMap[responseCode])
-
-            val responseBody =  async { fetch().readText() }
 
 
-      responseBody
     }
 
 
 
-}
+
 

@@ -17,7 +17,7 @@ interface Cache<T,V> : MutableMap<T, V> {
 
 class BallCache<T, V> : Cache<T, V> {
 
-    private val cache = mutableMapOf<T, V>()
+    private val cache = HashMap<T, V>()
 
     override val size: Int
         get() = cache.size
@@ -67,7 +67,6 @@ class BallCache<T, V> : Cache<T, V> {
     override operator fun get(key: T): V? {
         TODO("Not yet implemented")
     }
-
     /**
      * Returns `true` if the map is empty (contains no elements), `false` otherwise.
      */
