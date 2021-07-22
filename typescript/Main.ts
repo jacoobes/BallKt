@@ -1,5 +1,5 @@
 import PlayerManager from "./managers/PlayerManager"
 
-class Ballkt {
+export default class Ballkt {
     public players = new PlayerManager()
 }
