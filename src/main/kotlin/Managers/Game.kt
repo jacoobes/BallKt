@@ -10,6 +10,14 @@ import dev.seren.serializables.player.PlayerData
 class Game : BallManager() {
 
     override val baseUrl: String = "${super.baseUrl}games"
+
+    /**
+     * Turns [extractBody] into JSON with serialization
+     */
+    override suspend fun <T> JSONResponse(url: String): T {
+        TODO("Not yet implemented")
+    }
+
     internal val cache = BallCache<String, GameData>()
 
 

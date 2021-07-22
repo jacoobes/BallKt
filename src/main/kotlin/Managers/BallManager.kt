@@ -1,5 +1,8 @@
 package dev.seren.Managers
 
+import dev.seren.BallCache
+import dev.seren.serializables.baseSerializable
+import dev.seren.serializables.player.PlayerList
 import io.ktor.client.*
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.*
@@ -31,7 +34,8 @@ typealias Promise<T> = Deferred<T>
         }
     }
 
-    internal val errorActionMap = mapOf(
+
+    protected val errorActionMap = mapOf(
         400 to "Bad Request -- Your request is invalid.",
         404 to "Not Found -- The specified resource could not be found.",
         406 to "Not Acceptable -- You requested a format that isn't json.",
@@ -66,14 +70,20 @@ typealias Promise<T> = Deferred<T>
         async(Dispatchers.IO) {
             val response = fetch(url)
             val responseCode = response.status.value
-            errorActionMap[responseCode]?.let { throw Error(it)  }
+            errorActionMap[responseCode]?.let {
+                throw Error(errorActionMap[responseCode])
+            }
             response.readText()
         }
     }.await()
 
+    /**
+     * Turns [extractBody] into JSON with serialization
+     */
+    protected abstract suspend fun <T> JSONResponse(url : String = baseUrl) : T
 
 
-    }
+}
 
 
 

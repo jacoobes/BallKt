@@ -1,17 +1,18 @@
 package dev.seren
 
+import dev.seren.Managers.Player
 
 
-interface Cache<T,V> : MutableMap<T, V> {
+interface Cache<T,V> : Map<T, V> {
     override val size: Int
 
     operator fun set(key: T, value:V)
 
     override operator fun get(key: T): V?
 
-    override fun remove(key: T): V?
+    fun remove(key: T): V?
 
-    override fun clear()
+    fun clear()
 }
 
 
@@ -64,9 +65,7 @@ class BallCache<T, V> : Cache<T, V> {
     /**
      * Returns the value corresponding to the given [key], or `null` if such a key is not present in the map.
      */
-    override operator fun get(key: T): V? {
-        TODO("Not yet implemented")
-    }
+
     /**
      * Returns `true` if the map is empty (contains no elements), `false` otherwise.
      */
@@ -74,22 +73,10 @@ class BallCache<T, V> : Cache<T, V> {
         TODO("Not yet implemented")
     }
 
-    override fun set(key: T, value: V) {
-        TODO("Not yet implemented")
-    }
+    override fun set(key: T, value: V) { cache[key] = value }
 
-    /**
-     * Associates the specified [value] with the specified [key] in the map.
-     *
-     * @return the previous value associated with the key, or `null` if the key was not present in the map.
-     */
-    override fun put(key: T, value: V): V? = cache.put(key, value)
+    override fun get(key: T): V? = cache[key]
 
-
-    /**
-     * Updates this map with key/value pairs from the specified map [from].
-     */
-    override fun putAll(from: Map<out T, V>) = cache.putAll(from)
 
 
 }
