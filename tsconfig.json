@@ -4,7 +4,7 @@
         "module": "commonjs",
         "lib": ["esnext", "esnext.asynciterable"],
         "declaration": true,
-        "outDir": "./dist",
+        "outDir": "./lib",
         "importHelpers": true,
         "downlevelIteration": true,
         "strict": true,

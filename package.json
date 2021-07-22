@@ -1,0 +1,24 @@
+{
+  "name": "ballkt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacoobes/BallKt.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jacoobes/BallKt/issues"
+  },
+  "homepage": "https://github.com/jacoobes/BallKt#readme",
+  "dependencies": {
+    "@discordjs/collection": "^0.2.0",
+    "node-fetch": "^2.6.1",
+    "tslib": "^2.3.0"
+  }
+}
