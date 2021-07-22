@@ -14,5 +14,11 @@ export default class extends Manager {
       return data;
     }
     if (!force && this.cache.get(id)) return this.cache.get(id);
+
+    const data = await (await fetch(this.endpoint + "players/" + id.toString())).json();
+
+    this.cache.set(data.id, data);
+
+    return data;
   }
 }
