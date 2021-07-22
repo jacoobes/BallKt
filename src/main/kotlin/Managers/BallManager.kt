@@ -60,9 +60,9 @@ typealias Promise<T> = Deferred<T>
     /**
      * Runs on IO thread for networking calls.
      * Checks to see if their is an error and throws
-     * @returns [String] body of response as a String
+     * @returns [Promise<String>] body of response as a String
      */
-    internal suspend fun <T> extractBody(url: String): String = coroutineScope {
+    internal suspend fun <T> extractBody(url: String): Promise<String> = coroutineScope {
         async(Dispatchers.IO) {
             val response = fetch(url)
             val responseCode = response.status.value
@@ -71,7 +71,7 @@ typealias Promise<T> = Deferred<T>
             }
             response.readText()
         }
-    }.await()
+    }
 
     /**
      * Turns [extractBody] into JSON with serialization
