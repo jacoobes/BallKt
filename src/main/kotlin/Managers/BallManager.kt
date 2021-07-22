@@ -48,21 +48,17 @@ typealias Promise<T> = Deferred<T>
     internal open val baseUrl : String = "https://www.balldontlie.io/api/v1/"
 
     /**
-     * raw api calls
-     * body is a string that needs to serialized with class specific serializers
-     * kotlinx.serialization.decodeFromString()
+     * @param [url] - raw api calls
      * @return [HttpResponse]
-     *
      */
-    internal suspend fun fetch(url: String = baseUrl) : HttpResponse = client.use {
+    private suspend fun fetch(url: String = baseUrl) : HttpResponse = client.use {
         client.get(url) {
             accept(Json)
         }
     }
 
     /**
-     *
-     * Runs on IO thread for networking calls
+     * Runs on IO thread for networking calls.
      * Checks to see if their is an error and throws
      * @returns [String] body of response as a String
      */
@@ -80,7 +76,7 @@ typealias Promise<T> = Deferred<T>
     /**
      * Turns [extractBody] into JSON with serialization
      */
-    protected abstract suspend fun <T> JSONResponse(url : String = baseUrl) : T
+    protected abstract suspend fun <T> JSONResponse(url : String = baseUrl, forList: Boolean = false) : T
 
 
 }

@@ -2,14 +2,16 @@ package dev.seren.common
 
 import dev.seren.BallClient
 import dev.seren.Managers.Player
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
 
 
- fun main() = runBlocking {
+ suspend fun main() = coroutineScope {
     val client = BallClient()
-    println(client.players.fetchById(5))
 
-    println(client.players.cache[3])
+
+    println(client.players.fetchByName("a"))
+
 
 }
 
