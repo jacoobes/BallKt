@@ -53,6 +53,8 @@ class BallCache<T, V> : Cache<T, V> {
      */
     override fun containsKey(key: T): Boolean =  cache.containsKey(key)
 
+    infix fun has(key : T) : Boolean = cache.containsKey(key)
+
     /**
      * Returns `true` if the map maps one or more keys to the specified [value].
      */
@@ -73,7 +75,7 @@ class BallCache<T, V> : Cache<T, V> {
 
     override fun set(key: T, value: V) { cache[key] = value }
 
-    override fun get(key: T): V? = cache[key].also { println("Coming from cache") }
+    override fun get(key: T): V? = cache[key]
 
 
 

@@ -16,7 +16,7 @@ import kotlinx.serialization.json.Json
  * */
 class Player : BallManager() {
 
-    val cache = BallCache<Int, PlayerData>()
+    internal val cache = BallCache<Int, PlayerData>()
     private val playerURL = "${baseUrl}players/"
     /**
      * For single requests only
@@ -32,12 +32,14 @@ class Player : BallManager() {
        return data ?: JSONResponse<PlayerData>(urlForID).also { cache[id] = it }
     }
     /**
+     * This method is only for fetching a [List] of 100 [PlayerData] by [name]. Cannot use for concurrent or many api calls; It will result in an error.
+     *
      * @param [name] [String] search string
-     *      - First 100 players that have [name]
+     *
      * @param [forceRequest]  forces to make a request to API
      * @return [List<PlayerData>]
      */
-
+    @Suppress("unused")
     suspend fun fetchByName(name: String, forceRequest: Boolean = false) : List<PlayerData>{
       val searchNameURL = "${playerURL}?search=$name&per_page=100"
       if(forceRequest) return JSONResponse<PlayerList>(searchNameURL, true).data
@@ -51,7 +53,7 @@ class Player : BallManager() {
          */
 
       data.forEach {
-          if(cache.containsKey(it.id)) {
+          if( cache has it.id ) {
               cache[it.id]?.let { player ->
                   listOfPlayers.add(player)
               }
@@ -61,9 +63,6 @@ class Player : BallManager() {
           }
 
       }
-
-
-
         return listOfPlayers
     }
 
@@ -78,10 +77,10 @@ class Player : BallManager() {
            if(!forList)
                Json
                .decodeFromString<PlayerData>(
-                   (Dispatchers.Default) { extractBody<PlayerData>(url) }) as T
+                   (Dispatchers.Default) { extractBody<PlayerData>(url).await() }) as T
            else
                Json
-               .decodeFromString<PlayerList>((Dispatchers.Default) { extractBody<PlayerList>(url)}) as T
+               .decodeFromString<PlayerList>((Dispatchers.Default) { extractBody<PlayerList>(url).await() }) as T
 
        }
 
