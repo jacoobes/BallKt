@@ -1,6 +1,17 @@
 import Manager from "./Manager";
 
+
+/**
+ * @class
+ */
 export default class extends Manager {
+
+  /**
+   * 
+   * @param id player id
+   * @param force force a request
+   * @returns Player
+   */  
   async fetch(id?: number, force?: boolean) {
     if (!id) {
       const { data } = await this.request("players");
