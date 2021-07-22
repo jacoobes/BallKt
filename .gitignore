@@ -70,3 +70,5 @@ outTmp/
 /kotlin-native/dist
 /build/js/node_modules/
 *.jar
+lib
+*.js
