@@ -1,10 +1,9 @@
 import Manager from "./Manager";
-import fetch from "node-fetch";
 
 export default class extends Manager {
   async fetch(id?: number, force?: boolean) {
     if (!id) {
-      const { data } = await (await fetch(this.endpoint + "players")).json();
+      const { data } = await this.request("players");
 
       for (const obj of data) {
           if (!obj || !("id" in obj)) continue;
@@ -15,7 +14,7 @@ export default class extends Manager {
     }
     if (!force && this.cache.get(id)) return this.cache.get(id);
 
-    const data = await (await fetch(this.endpoint + "players/" + id.toString())).json();
+    const data = await this.request("players/" + id.toString())
 
     this.cache.set(data.id, data);
 
