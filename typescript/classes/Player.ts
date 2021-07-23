@@ -1,26 +1,26 @@
 import Team, { APITeam } from "./Team";
 
-interface Player {
+interface Base<T> {
     id: number;
+    position: string;
+    team: T;
+}
+
+interface Player extends Base<Team> {
     firstName: string;
     lastName: string;
     name: string;
-    position: string;
     feet: number;
     inches: number;
     pounds: number;
-    team: Team;
 }
 
-export interface APIPlayer {
-    id: number;
+export interface APIPlayer extends Base<APITeam> {
     first_name: string;
     last_name: string;
-    position: string;
     height_feet: number;
     height_inches: number;
     weight_pounds: number;
-    team: APITeam;
 }
 
 class Player {

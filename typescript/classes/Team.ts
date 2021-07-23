@@ -1,21 +1,18 @@
-export interface APITeam {
+interface Base {
     id: number;
     abbreviation: string;
     city: string;
     conference: string;
     division: string;
-    full_name: string;
     name: string;
 }
 
-interface Team {
-    id: number;
-    abbreviation: string;
-    city: string;
-    conference: string;
-    division: string;
+export interface APITeam extends Base {
+    full_name: string;
+}
+
+interface Team extends Base {
     fullName: string;
-    name: string;
 }
 
 class Team {

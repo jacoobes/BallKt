@@ -3,9 +3,8 @@ import Player, { APIPlayer } from "../classes/Player";
 
 /**
  * @class 
- * 
  */
-export default class extends Manager<number, Player> {
+export default class extends Manager<Player["id"], Player> {
 
   /**
    * 
