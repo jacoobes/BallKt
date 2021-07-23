@@ -1,10 +1,11 @@
 import Manager from "./Manager";
-
+import Player, { APIPlayer } from "../classes/Player";
 
 /**
- * @class
+ * @class 
+ * 
  */
-export default class extends Manager {
+export default class extends Manager<number, Player> {
 
   /**
    * 
@@ -12,23 +13,39 @@ export default class extends Manager {
    * @param force force a request
    * @returns Player
    */  
-  async fetch(id?: number, force?: boolean) {
+  
+  async fetch(id?: number, options?: options): Promise<Player> {
+
+    const force = options?.force
+
     if (!id) {
       const { data } = await this.request("players");
 
+      console.log(data.length)
+
       for (const obj of data) {
           if (!obj || !("id" in obj)) continue;
-          this.cache.set(obj.id, obj)
+          this.cache.set(obj.id, new Player(obj))
       }
 
-      return data;
+      return data.map((data: APIPlayer) => new Player(data));
     }
-    if (!force && this.cache.get(id)) return this.cache.get(id);
 
-    const data = await this.request("players/" + id.toString())
 
-    this.cache.set(data.id, data);
+    const playerInCache = this.cache.get(id)
+    if (!force && playerInCache) {
+        return playerInCache;
+    }
 
-    return data;
+    const data: APIPlayer = await this.request("players/" + id.toString())
+
+    this.cache.set(data.id, new Player(data));
+
+    return new Player(data);
   }
+}
+
+
+type options = {
+    force?: boolean
 }

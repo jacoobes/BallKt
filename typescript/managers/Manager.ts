@@ -7,9 +7,9 @@ import fetch from "node-fetch"
  * @protected request
  * @class
  */
-export default class Manager {
+export default class Manager<V, T> {
     private readonly endpoint = "https://www.balldontlie.io/api/v1/"
-    public cache = new Collection()
+    public cache = new Collection<V, T>()
 
     protected async request(endpoint: string) {
         return (await fetch(this.endpoint + endpoint)).json()
