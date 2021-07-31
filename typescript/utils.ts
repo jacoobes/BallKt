@@ -1,3 +1,10 @@
+export namespace PlayerManagerTypes {
+  export type every = "all" | "every" | 0;
+  export type name = "name" | 1;
+  export type id = "id" | 2;
+}
+
+
 export type numbers =
   | 1
   | 2

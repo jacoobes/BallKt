@@ -1,6 +1,6 @@
 import Manager from "./Manager";
 import Player, { APIPlayer } from "../classes/Player";
-import { numbers as range1_100 } from "../utils";
+import { PlayerManagerTypes, numbers as range1_100 } from "../utils";
 
 /**
  * @class
@@ -54,6 +54,6 @@ export default class m extends Manager<Player["id"], Player> {
   }
 }
 
-type all = "all" | 0;
-type name = "name" | 1;
-type id = "id" | 2;
+type all = PlayerManagerTypes.every
+type name = PlayerManagerTypes.name
+type id = PlayerManagerTypes.id
