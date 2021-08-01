@@ -55,12 +55,6 @@ class BallCache<T, V> : Cache<T, V> {
 
     infix fun has(key : T) : Boolean = cache.containsKey(key)
 
-    /**
-     * Returns `true` if the map maps one or more keys to the specified [value].
-     */
-    override fun containsValue(value: V): Boolean {
-        TODO("Not yet implemented")
-    }
 
     /**
      * Returns the value corresponding to the given [key], or `null` if such a key is not present in the map.
@@ -77,6 +71,9 @@ class BallCache<T, V> : Cache<T, V> {
 
     override fun get(key: T): V? = cache[key]
 
+    override fun containsValue(value: V): Boolean {
+        return cache.containsValue(value)
+    }
 
 
 }
