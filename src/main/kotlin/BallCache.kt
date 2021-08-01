@@ -3,19 +3,20 @@ package dev.seren
 import dev.seren.Managers.Player
 
 
-interface Cache<T,V>{
+interface Cache<T, V> {
 
-    operator fun set(key: T, value:V)
+    operator fun set(key: T, value: V)
 
 }
 
 
 class BallCache<T, V>(maxSize: Int) : Cache<T, V> {
 
-    private val cache : MutableMap<T, V> = object : LinkedHashMap<T,V>(
+    private val cache: MutableMap<T, V> = object : LinkedHashMap<T, V>(
         initialCapacity = 0,
         loadFactor = 0.75f,
-        accessOrder = true) {
+        accessOrder = true
+    ) {
         override fun removeEldestEntry(eldest: MutableMap.MutableEntry<T, V>?): Boolean {
             return size > maxSize
         }
@@ -25,14 +26,16 @@ class BallCache<T, V>(maxSize: Int) : Cache<T, V> {
     val size: Int
         get() = cache.size
 
-    infix fun has (value: T) : Boolean = cache.containsKey(value)
+    infix fun has(value: T): Boolean = cache.containsKey(value)
 
     fun reset() {
-        TODO()
+        cache.clear()
     }
+
     fun dump() {
         println(cache)
     }
+
     fun size(): Long {
         return synchronized(this) {
             val snapshot = LinkedHashMap(cache)
