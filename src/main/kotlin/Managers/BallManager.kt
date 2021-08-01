@@ -62,7 +62,7 @@ typealias Promise<T> = Deferred<T>
      * Checks to see if their is an error and throws
      * @returns [Promise<String>] body of response as a String
      */
-    internal suspend fun <T> extractBody(url: String): Promise<String> = coroutineScope {
+    internal suspend fun extractBody(url: String): String = coroutineScope {
         async(Dispatchers.IO) {
             val response = fetch(url)
             val responseCode = response.status.value
@@ -70,13 +70,13 @@ typealias Promise<T> = Deferred<T>
                 throw Error(errorActionMap[responseCode])
             }
             response.readText()
-        }
+        }.await()
     }
 
     /**
      * Turns [extractBody] into JSON with serialization
      */
-    protected abstract suspend fun <T> JSONResponse(url : String = baseUrl, forList: Boolean = false) : T
+    abstract suspend fun <T> JSONResponse(url : String = baseUrl, forList: Boolean = false) : T
 
 
 }
