@@ -15,7 +15,6 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
 
 
-typealias Promise<T> = Deferred<T>
 
 /**
  * Base class for all endpoints with the API

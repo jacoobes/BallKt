@@ -19,7 +19,7 @@ class Game : BallManager() {
         TODO("Not yet implemented")
     }
 
-    internal val cache = BallCache<String, GameData>()
+    internal val cache = BallCache<String, GameData>(100)
 
 
 
