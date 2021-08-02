@@ -4,6 +4,7 @@ import dev.seren.BallCache
 import dev.seren.serializables.baseSerializable
 import dev.seren.serializables.player.PlayerList
 import io.ktor.client.*
+import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
@@ -24,7 +25,7 @@ import kotlinx.serialization.json.*
 
  sealed class BallManager {
 
-   open val client = HttpClient {
+   private val client get() =  HttpClient(CIO) {
         install(JsonFeature) {
             serializer = KotlinxSerializer(Json {
                 prettyPrint = true

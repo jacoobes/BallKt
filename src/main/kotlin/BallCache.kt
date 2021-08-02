@@ -13,9 +13,7 @@ interface Cache<T, V> {
 class BallCache<T, V>(maxSize: Int) : Cache<T, V> {
 
     private val cache: MutableMap<T, V> = object : LinkedHashMap<T, V>(
-        initialCapacity = 0,
-        loadFactor = 0.75f,
-        accessOrder = true
+        0, .75f, true
     ) {
         override fun removeEldestEntry(eldest: MutableMap.MutableEntry<T, V>?): Boolean {
             return size > maxSize

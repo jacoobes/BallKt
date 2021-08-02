@@ -17,7 +17,7 @@ import kotlin.io.use
  * */
 class Player : BallManager() {
 
-    internal val cache = BallCache<Int, PlayerData>(100)
+    internal val cache = BallCache<Int, PlayerData>(2)
     private val playerURL = "${baseUrl}players/"
 
     /**

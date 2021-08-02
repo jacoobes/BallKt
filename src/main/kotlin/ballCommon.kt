@@ -9,9 +9,17 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
 
 
- suspend fun main() = coroutineScope {
-    val test = BallClient().players.fetchById(10)
-    val jo = BallClient().players.fetchById(1)
+ fun main() = runBlocking {
+    val client = BallClient()
+    client.players.fetchById(10)
+
+    client.players.fetchById(1)
+
+    client.players.cache.dump()
+
+
+
+     println()
 
 }
 
