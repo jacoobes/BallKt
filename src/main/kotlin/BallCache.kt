@@ -49,4 +49,5 @@ class BallCache<T, V>(maxSize: Int) : Cache<T, V> {
         return cache[id]
     }
 
+    override fun toString(): String = cache.toString()
 }

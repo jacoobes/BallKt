@@ -9,15 +9,14 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
 
 
- fun main() = runBlocking {
+ suspend fun main() = coroutineScope {
     val client = BallClient()
-    client.players.fetchById(10)
 
-    client.players.fetchById(1)
+    for (i in 1..10) {
+        client.players.fetchById(i)
+    }
 
-    client.players.cache.dump()
-
-
+    println(client.players.cache)
 
      println()
 

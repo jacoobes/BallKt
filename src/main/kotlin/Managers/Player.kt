@@ -17,11 +17,11 @@ import kotlin.io.use
  * */
 class Player : BallManager() {
 
-    internal val cache = BallCache<Int, PlayerData>(2)
+    internal val cache = BallCache<Int, PlayerData>(100)
     private val playerURL = "${baseUrl}players/"
 
     /**
-     * For single requests only
+     * Fetch by ID. Optimized for fetching single requests
      * @param [id] player id
      * @param [forceRequest]  forces to make a request to API
      * @return [PlayerData]
@@ -35,7 +35,7 @@ class Player : BallManager() {
     }
 
     /**
-     * This method is only for fetching a [List] of 100 [PlayerData] by [name]. Cannot use for concurrent or many api calls; It will result in an error.
+     * This method is only for fetching a [List] of 100 [PlayerData] by [name].
      *
      * @param [name] [String] search string
      *
