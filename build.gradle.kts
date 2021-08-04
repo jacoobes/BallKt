@@ -22,6 +22,8 @@ dependencies {
     implementation("io.ktor:ktor-client-serialization:$ktorVersion")
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation ("com.github.kittinunf.fuel:fuel:2.31")
+    implementation ("com.github.kittinunf.fuel:fuel-kotlinx-serialization:2.31")
     implementation(kotlin("stdlib"))
 }
 
