@@ -62,15 +62,11 @@ import kotlinx.serialization.json.*
      * Checks to see if their is an error and throws
      * @returns [Promise<String>] body of response as a String
      */
-    internal suspend fun extractBody(url: String): String = coroutineScope {
-        async(Dispatchers.IO) {
-            val response = fetch(url)
-            val responseCode = response.status.value
-            errorActionMap[responseCode]?.let {
-                throw Error(errorActionMap[responseCode])
-            }
-            response.readText()
-        }.await()
+    internal suspend fun extractBody(url: String): String  {
+
+        return url
+
+
     }
 
     /**
