@@ -17,18 +17,29 @@ class Player : BallManager() {
     /**
      * Fetch by ID. Optimized for fetching single requests
      * @param [id] player id
-     * @param [forceRequest]  forces to make a request to API
-     * @return [PlayerData]
+     * @return [PlayerData?]
      */
-//    @Suppress("unused")
-//    suspend fun fetchById(id: Int, forceRequest: Boolean = false) : PlayerData {
-//       val urlForID = "${playerURL}$id"
-//       if(forceRequest) return JSONResponse(urlForID)
-//       val data = cache[id]
-//       return data ?: JSONResponse<PlayerData>(urlForID).also { cache[id] = it }
-//    }
 
+    @Suppress("unused")
+     fun fetchById(id: Int) : PlayerData? {
 
+      if(cache hasKey id) return cache[id]
+      "$playerEndpoint/$id"
+          .httpGet()
+          .responseObject(PlayerData.Deserializer()) { _, _, result ->
+              when(result)  {
+                  is Result.Success -> {
+                      cache[result.get().id]
+                  }
+                  is Result.Failure -> {
+                      throw result.getException()
+                  }
+          }
+      }.join()
+
+        return if(cache hasKey id) cache[id] else null
+
+    }
 
 
 
