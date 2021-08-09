@@ -1,6 +1,7 @@
 package dev.seren
 
 import dev.seren.Managers.Player
+import dev.seren.serializables.player.PlayerData
 
 
 interface Cache<T, V> {
@@ -9,7 +10,7 @@ interface Cache<T, V> {
 
 }
 
-
+@Suppress("UNCHECKED_CAST")
 class BallCache<T, V>(maxSize: Int) : Cache<T, V> {
 
     private val cache: MutableMap<T, V> = object : LinkedHashMap<T, V>(
@@ -21,14 +22,18 @@ class BallCache<T, V>(maxSize: Int) : Cache<T, V> {
 
     }
 
+    val values : List<V>
+        get() = cache.values as List<V>
+
     val size: Int
         get() = cache.size
 
-    infix fun has(value: T): Boolean = cache.containsKey(value)
+    infix fun hasKey(value: T): Boolean = cache.containsKey(value)
 
     fun reset() {
         cache.clear()
     }
+
 
     fun dump() {
         println(cache)
