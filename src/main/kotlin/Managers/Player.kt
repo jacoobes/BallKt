@@ -92,7 +92,7 @@ class Player : BallManager() {
 
     fun playerData(url: String): PlayerDataList{
         val (request, response, result) =  url.httpGet().responseObject(PlayerData.ListDeserializer())
-        return result.get()
+        return result.get();
     }
 
 
