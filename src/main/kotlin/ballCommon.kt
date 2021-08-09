@@ -8,18 +8,10 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
 
-
- suspend fun main() = coroutineScope {
+suspend fun main()  {
     val client = BallClient()
-
-    for (i in 1..10) {
-        client.players.fetchById(i)
-    }
-
-    println(client.players.cache)
-
-
-
+println(client.players.playerData ("players?search=anthony davis")
+)
 }
 
 

@@ -1,8 +1,10 @@
 package dev.seren.Managers
 
-import dev.seren.BallCache
-import dev.seren.serializables.baseSerializable
-import dev.seren.serializables.player.PlayerList
+import com.github.kittinunf.fuel.core.FuelManager
+import com.github.kittinunf.fuel.core.Request
+import com.github.kittinunf.fuel.core.Response
+import com.github.kittinunf.fuel.core.requests.CancellableRequest
+import com.github.kittinunf.fuel.httpGet
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.JsonFeature
@@ -14,7 +16,7 @@ import io.ktor.utils.io.core.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
-
+import com.github.kittinunf.result.Result
 
 
 /**
@@ -25,54 +27,19 @@ import kotlinx.serialization.json.*
 
  sealed class BallManager {
 
-   private val client get() =  HttpClient(CIO) {
-        install(JsonFeature) {
-            serializer = KotlinxSerializer(Json {
-                prettyPrint = true
-                isLenient = true
-            })
-        }
-    }
+   protected val client = FuelManager.instance.apply {
+       basePath = "https://www.balldontlie.io/api/v1"
+   }
 
-
-    protected val errorActionMap = mapOf(
-        400 to "Bad Request -- Your request is invalid.",
-        404 to "Not Found -- The specified resource could not be found.",
-        406 to "Not Acceptable -- You requested a format that isn't json.",
-        429 to "Too Many Requests -- Rate limit",
-        500 to "Internal Server Error -- We had a problem with our server. Try again later.",
-        503 to "Service Unavailable -- We're temporarily offline for maintenance. Please try again later."
-    )
-
-
-    internal open val baseUrl : String = "https://www.balldontlie.io/api/v1/"
-
-    /**
-     * @param [url] - raw api calls
-     * @return [HttpResponse]
-     */
-    private suspend fun fetch(url: String = baseUrl) : HttpResponse = client.use {
-        client.get(url) {
-            accept(Json)
-        }
-    }
 
     /**
      * Runs on IO thread for networking calls.
      * Checks to see if their is an error and throws
-     * @returns [Promise<String>] body of response as a String
+     * @returns [Response] body of response as a String
      */
-    internal suspend fun extractBody(url: String): String  {
-
-        return url
+    internal fun extractBody(url: String): Request = url.httpGet()
 
 
-    }
-
-    /**
-     * Turns [extractBody] into JSON with serialization
-     */
-    abstract suspend fun <T> JSONResponse(url : String = baseUrl, forList: Boolean = false) : T
 
 
 }

@@ -1,16 +1,18 @@
 package dev.seren.Managers
 
+import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.core.Request
+import com.github.kittinunf.fuel.core.Response
+import com.github.kittinunf.fuel.core.await
+import com.github.kittinunf.fuel.core.awaitResponse
+import com.github.kittinunf.fuel.core.requests.CancellableRequest
+import com.github.kittinunf.fuel.gson.responseObject
+import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.result.Result
 import dev.seren.BallCache
 import dev.seren.serializables.player.PlayerData
-import dev.seren.serializables.player.PlayerList
-import io.ktor.client.features.*
-import io.ktor.client.request.*
+import dev.seren.serializables.player.PlayerDataList
 import io.ktor.utils.io.core.*
-import kotlinx.coroutines.*
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import kotlin.io.use
-
 
 /**
  * Interacting with Player endpoint
@@ -18,7 +20,7 @@ import kotlin.io.use
 class Player : BallManager() {
 
     internal val cache = BallCache<Int, PlayerData>(100)
-    private val playerURL = "${baseUrl}players/"
+
 
     /**
      * Fetch by ID. Optimized for fetching single requests
@@ -26,13 +28,13 @@ class Player : BallManager() {
      * @param [forceRequest]  forces to make a request to API
      * @return [PlayerData]
      */
-    @Suppress("unused")
-    suspend fun fetchById(id: Int, forceRequest: Boolean = false) : PlayerData {
-       val urlForID = "${playerURL}$id"
-       if(forceRequest) return JSONResponse(urlForID)
-       val data = cache[id]
-       return data ?: JSONResponse<PlayerData>(urlForID).also { cache[id] = it }
-    }
+//    @Suppress("unused")
+//    suspend fun fetchById(id: Int, forceRequest: Boolean = false) : PlayerData {
+//       val urlForID = "${playerURL}$id"
+//       if(forceRequest) return JSONResponse(urlForID)
+//       val data = cache[id]
+//       return data ?: JSONResponse<PlayerData>(urlForID).also { cache[id] = it }
+//    }
 
     /**
      * This method is only for fetching a [List] of 100 [PlayerData] by [name].
@@ -42,61 +44,59 @@ class Player : BallManager() {
      * @param [forceRequest]  forces to make a request to API
      * @return [List<PlayerData>]
      */
-    @Suppress("unused")
-    suspend fun fetchByName(name: String, forceRequest: Boolean = false) : List<PlayerData> = coroutineScope {
+//    @Suppress("unused")
+//    suspend fun fetchByName(name: String, forceRequest: Boolean = false) : List<PlayerData> = coroutineScope {
+//
+//        val searchNameURL = "${playerURL}?search=$name&per_page=100"
+//        if(forceRequest) return@coroutineScope JSONResponse<PlayerList>(searchNameURL, true).data
+//        val ( data ) = JSONResponse<PlayerList>(searchNameURL, true)
+//
+//        val listOfPlayers = mutableListOf<PlayerData>()
+//
+//        /**
+//         * If the cache has player already, adds to List
+//         * else adds json data and adds cache data
+//         */
+//
+//        data.forEach {
+//            if( cache has it.id ) {
+//                cache[it.id]?.let { player ->
+//                    listOfPlayers.add(player)
+//                }
+//            } else {
+//                listOfPlayers.add(it)
+//                cache[it.id] = it
+//            }
+//
+//        }
+//        listOfPlayers
+//    }
+//
+//
+//    fun playerList(url: String): List<PlayerData> {
+//        val listOfPlayers: MutableList<PlayerData> = mutableListOf()
+//        extractBody(url)
+//            .responseObject(PlayerData.ListDeserializer()) { _, _, result ->
+//                val (data, _) = result
+//                if (result is Result.Failure) throw result.getException()
+//                println(result)
+//                data?.forEach {
+//                    listOfPlayers.add(it)
+//                }
+//
+//
+//            }.join()
+//        return listOfPlayers
+//
+//    }
 
-        val searchNameURL = "${playerURL}?search=$name&per_page=100"
-        if(forceRequest) return@coroutineScope JSONResponse<PlayerList>(searchNameURL, true).data
-        val ( data ) = JSONResponse<PlayerList>(searchNameURL, true)
-
-        val listOfPlayers = mutableListOf<PlayerData>()
-
-        /**
-         * If the cache has player already, adds to List
-         * else adds json data and adds cache data
-         */
-
-        data.forEach {
-            if( cache has it.id ) {
-                cache[it.id]?.let { player ->
-                    listOfPlayers.add(player)
-                }
-            } else {
-                listOfPlayers.add(it)
-                cache[it.id] = it
-            }
-
-        }
-        listOfPlayers
+    fun playerData(url: String): PlayerDataList{
+        val (request, response, result) =  url.httpGet().responseObject(PlayerData.ListDeserializer())
+        return result.get()
     }
-
-    /**
-     * Turns [extractBody] into JSON with serialization
-     * @param [forList] [Boolean] handles both List and Non List version of API responses
-     * @return [T] - usually the serializable version of this Class
-     */
-    @Suppress("UNCHECKED_CAST")
-    override suspend fun <T> JSONResponse(url: String, forList: Boolean): T = coroutineScope {
-        withContext(Dispatchers.Default) {
-            if(!forList)
-                Json
-                    .decodeFromString<PlayerData>(
-                        (Dispatchers.Default) { extractBody(url)}) as T
-            else
-                Json
-                    .decodeFromString<PlayerList>((Dispatchers.Default) { extractBody(url) }) as T
-
-        }
-
-    }
-
 
 
 }
-
-
-
-
 
 
 

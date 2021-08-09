@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.5.21"
-    kotlin("plugin.serialization") version "1.5.20"
 }
 
 group = "dev.seren"
@@ -19,8 +18,9 @@ val coroutineVers = "1.5.1"
 
 dependencies {
     implementation ("com.github.kittinunf.fuel:fuel:2.3.1")
-    implementation ("com.github.kittinunf.fuel:fuel-kotlinx-serialization:2.3.1")
+    implementation ("com.github.kittinunf.fuel:fuel-gson:2.3.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVers")
+    implementation("com.google.code.gson:gson:2.8.7")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
     implementation("io.ktor:ktor-client-serialization:$ktorVersion")
     implementation("io.ktor:ktor-client-core:$ktorVersion")
