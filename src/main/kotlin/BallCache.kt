@@ -34,7 +34,6 @@ class BallCache<T, V>(maxSize: Int) : Cache<T, V> {
         cache.clear()
     }
 
-
     fun dump() {
         println(cache)
     }
@@ -50,8 +49,8 @@ class BallCache<T, V>(maxSize: Int) : Cache<T, V> {
         cache[key] = value
     }
 
-    operator fun get(id: T): V? {
-        return cache[id]
+    operator fun get(id: T): V {
+        return cache[id]!!
     }
 
     override fun toString(): String = cache.toString()

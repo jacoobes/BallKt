@@ -6,6 +6,11 @@ import com.github.kittinunf.result.Result
 import dev.seren.BallCache
 import dev.seren.serializables.player.PlayerData
 import io.ktor.utils.io.core.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Interacting with Player endpoint
@@ -14,13 +19,13 @@ class Player : BallManager() {
 
     internal val cache = BallCache<Int, PlayerData>(100)
     private val playerEndpoint = "${client.basePath}/players"
+
+    @Suppress("unused")
     /**
      * Fetch by ID. Optimized for fetching single requests
      * @param [id] player id
      * @return [PlayerData?]
      */
-
-    @Suppress("unused")
      fun fetchById(id: Int) : PlayerData? {
 
       if(cache hasKey id) return cache[id]
@@ -39,11 +44,23 @@ class Player : BallManager() {
       }.join()
 
         return if(cache hasKey id) cache[id] else null
-
     }
 
+    suspend fun fetchManyByIDs(ids: Set<Int>) : List<PlayerData> = coroutineScope {
+            ids.map { id ->
+                async(Dispatchers.IO) {
+                    if (cache hasKey id) cache[id]
+                    else "$playerEndpoint/$id".httpGet().responseObject(PlayerData.Deserializer()).third.get()
+                        .also {
+                            cache[id] = it
+                        }
+                }
+            }
+        }.awaitAll()
 
 
+
+    @Suppress("unused")
     /**
      *
      * @param [name] [String] search string
