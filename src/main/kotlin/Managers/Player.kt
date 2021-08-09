@@ -29,7 +29,8 @@ class Player : BallManager() {
           .responseObject(PlayerData.Deserializer()) { _, _, result ->
               when(result)  {
                   is Result.Success -> {
-                      cache[result.get().id]
+                      val player = result.get()
+                      cache[player.id] = player
                   }
                   is Result.Failure -> {
                       throw result.getException()
