@@ -10,7 +10,6 @@ import kotlinx.serialization.Serializable
 import java.io.Reader
 
 
-@Serializable
 data class PlayerData(
     val id : Int,
     val first_name: String,

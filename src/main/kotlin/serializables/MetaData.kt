@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 
 
-@Serializable
+
 data class MetaData(
     val total_pages : Int,
     val current_page: Int,

@@ -2,7 +2,7 @@ package dev.seren.serializables
 
 import kotlinx.serialization.Serializable
 
-@Serializable
+
 data class SeasonAvgData(
  val games_played : Int,
  val player_id :Int,
