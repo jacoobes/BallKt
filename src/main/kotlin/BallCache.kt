@@ -52,10 +52,12 @@ class BallCache<T, V>(maxSize: Int) : Cache<T, V> {
     operator fun get(id: T): V {
         return cache[id]!!
     }
-
-    inline fun find( condition : (V) -> Boolean ) : V? {
-        return values.find(condition)
+    operator fun get(vararg id:T) : List<V> {
+        return id.map {
+            cache[it]!!
+        }
     }
+    inline fun find( condition : (V) -> Boolean ) : V? = values.find(condition)
 
     override fun toString(): String = cache.toString()
 }

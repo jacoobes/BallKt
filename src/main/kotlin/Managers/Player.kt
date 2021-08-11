@@ -1,16 +1,12 @@
 package dev.seren.Managers
 
-import com.github.kittinunf.fuel.core.*
+import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import dev.seren.BallCache
 import dev.seren.serializables.player.PlayerData
 import io.ktor.utils.io.core.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.*
 
 /**
  * Interacting with Player endpoint
@@ -26,24 +22,24 @@ class Player : BallManager() {
      * @param [id] player id
      * @return [PlayerData?]
      */
-     fun fetchById(id: Int) : PlayerData? {
+    fun fetchById(id: Int): PlayerData? {
 
-      if(cache hasKey id) return cache[id]
-      "$playerEndpoint/$id"
-          .httpGet()
-          .responseObject(PlayerData.Deserializer()) { _, _, result ->
-              when(result)  {
-                  is Result.Success -> {
-                      val player = result.get()
-                      cache[player.id] = player
-                  }
-                  is Result.Failure -> {
-                      throw result.getException()
-                  }
-          }
-      }.join()
+        if (cache hasKey id) return cache[id]
+        "$playerEndpoint/$id"
+            .httpGet()
+            .responseObject(PlayerData.Deserializer()) { _, _, result ->
+                when (result) {
+                    is Result.Success -> {
+                        val player = result.get()
+                        cache[player.id] = player
+                    }
+                    is Result.Failure -> {
+                        throw result.getException()
+                    }
+                }
+            }.join()
 
-        return if(cache hasKey id) cache[id] else null
+        return if (cache hasKey id) cache[id] else null
     }
 
     /**
@@ -51,24 +47,8 @@ class Player : BallManager() {
      * Works as a cacher and API fetcher
      * @throws [FuelError]
      */
-    suspend fun fetchManyByIDs(ids: Set<Int>) : List<PlayerData> = coroutineScope {
-            ids.map { id ->
-                async(Dispatchers.IO) {
-                    if (cache hasKey id) cache[id]
-                    else "$playerEndpoint/$id".httpGet().responseObject(PlayerData.Deserializer()).third.get()
-                        .also {
-                            cache[id] = it
-                        }
-                }
-            }
-        }.awaitAll()
+    suspend fun fetchManyByIDs(ids: Set<Int>): List<PlayerData> = coroutineScope {
 
-    /**
-     * Range version of fetching many by ids
-     * Works as a cacher and API fetcher
-     * @throws [FuelError]
-     */
-    suspend fun fetchManyByIDs(ids: IntRange) : List<PlayerData> = coroutineScope {
         ids.map { id ->
             async(Dispatchers.IO) {
                 if (cache hasKey id) cache[id]
@@ -77,16 +57,33 @@ class Player : BallManager() {
                         cache[id] = it
                     }
             }
-        }
-    }.awaitAll()
+        }.awaitAll()
+    }
 
-    @Suppress("unused")
     /**
-     * @param [name] [String] search string
-     * @param [max] [Int] max amount of players displayed
-     * @return [List<PlayerData>]
+     * Range version of fetching many by ids
+     * Works as a cacher and API fetcher
+     * @throws [FuelError]
+     * @return List<Deferred<PlayerData>>
      */
-    fun fetchByName(name: String, max : Int): List<PlayerData> {
+    suspend fun fetchManyByIDs(ids: IntRange): List<PlayerData> = coroutineScope {
+        ids.map { id ->
+            async(Dispatchers.IO) {
+                if (cache hasKey id) cache[id]
+                else "$playerEndpoint/$id".httpGet().responseObject(PlayerData.Deserializer()).third.get()
+                    .also {
+                        cache[id] = it
+                    }
+            }
+        }.awaitAll()
+    }
+
+            /**
+             * @param [name] [String] search string
+             * @param [max] [Int] max amount of players displayed
+             * @return [List<PlayerData>]
+             */
+    fun fetchByName(name: String, max: Int): List<PlayerData> {
         val cachedPlayers = mutableListOf<PlayerData>()
 
         /**
@@ -101,7 +98,7 @@ class Player : BallManager() {
                     is Result.Success -> {
 
                         result.get().data.forEach {
-                            if(cache hasKey it.id){
+                            if (cache hasKey it.id) {
                                 cache[it.id].let { player -> cachedPlayers.add(player) }
                             } else {
                                 cachedPlayers.add(it)
