@@ -13,9 +13,7 @@ import kotlinx.coroutines.Deferred
  * */
 class Game : BallManager() {
 
-
-
-    internal val cache = BallCache<String, GameData>(100)
+    internal val cache = BallCache<String, GameData>(60)
 
 
 
