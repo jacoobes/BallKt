@@ -46,6 +46,10 @@ class Player : BallManager() {
         return if(cache hasKey id) cache[id] else null
     }
 
+    /**
+     * List version of fetching many by ids
+     * Works as a cacher and API fetcher
+     */
     suspend fun fetchManyByIDs(ids: Set<Int>) : List<PlayerData> = coroutineScope {
             ids.map { id ->
                 async(Dispatchers.IO) {
@@ -58,15 +62,29 @@ class Player : BallManager() {
             }
         }.awaitAll()
 
-
+    /**
+     * Range version of fetching many by ids
+     * Works as a cacher and API fetcher
+     */
+    suspend fun fetchManyByIDs(ids: IntRange) : List<PlayerData> = coroutineScope {
+        ids.map { id ->
+            async(Dispatchers.IO) {
+                if (cache hasKey id) cache[id]
+                else "$playerEndpoint/$id".httpGet().responseObject(PlayerData.Deserializer()).third.get()
+                    .also {
+                        cache[id] = it
+                    }
+            }
+        }
+    }.awaitAll()
 
     @Suppress("unused")
     /**
-     *
      * @param [name] [String] search string
+     * @param [max] [Int] max amount of players displayed
      * @return [List<PlayerData>]
      */
-    fun fetchByName(name: String): List<PlayerData> {
+    fun fetchByName(name: String, max : Int): List<PlayerData> {
         val cachedPlayers = mutableListOf<PlayerData>()
 
         /**
@@ -74,7 +92,7 @@ class Player : BallManager() {
          * else adds json data and adds cache data
          */
 
-        "$playerEndpoint/?search=$name"
+        "$playerEndpoint/?search=$name?per_page=$max"
             .httpGet()
             .responseObject(PlayerData.ListDeserializer()) { _, _, result ->
                 when (result) {
@@ -82,7 +100,7 @@ class Player : BallManager() {
 
                         result.get().data.forEach {
                             if(cache hasKey it.id){
-                                cache[it.id]?.let { player -> cachedPlayers.add(player) }
+                                cache[it.id].let { player -> cachedPlayers.add(player) }
                             } else {
                                 cachedPlayers.add(it)
                                 cache[it.id] = it
