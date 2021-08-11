@@ -22,8 +22,8 @@ class BallCache<T, V>(maxSize: Int) : Cache<T, V> {
 
     }
 
-    val values : List<V>
-        get() = cache.values as List<V>
+    val values : MutableCollection<V>
+      get() = cache.values
 
     val size: Int
         get() = cache.size
@@ -51,6 +51,10 @@ class BallCache<T, V>(maxSize: Int) : Cache<T, V> {
 
     operator fun get(id: T): V {
         return cache[id]!!
+    }
+
+    inline fun find( condition : (V) -> Boolean ) : V? {
+        return values.find(condition)
     }
 
     override fun toString(): String = cache.toString()

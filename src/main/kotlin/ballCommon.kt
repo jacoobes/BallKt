@@ -10,8 +10,10 @@ import kotlinx.coroutines.runBlocking
 
 suspend fun main()  {
     val client = BallClient()
-   client.players.fetchManyByIDs(setOf(1,2,3,4,5))
+   client.players.fetchManyByIDs(1..59)
     println(client.players.cache)
+
+   println( client.players.cache.find { it.id == 10 } )
 }
 
 
