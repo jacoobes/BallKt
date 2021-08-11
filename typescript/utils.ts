@@ -106,3 +106,18 @@ export type numbers =
   | 98
   | 99
   | 100;
+
+export namespace NoTypes {
+  export function query(endpoint: string, options: { name: string, value: string }[] | undefined[]) {
+
+    if (!options) return endpoint
+    endpoint += "?"
+
+    for (const option of options) {
+      if (!option) continue;
+      endpoint += option.name + "=" + option.value + "&"
+    }
+
+    return endpoint.slice(0, endpoint.length - 1)
+  }
+}

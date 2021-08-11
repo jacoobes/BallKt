@@ -1,6 +1,6 @@
 import Manager from "./Manager";
 import Player, { APIPlayer } from "../classes/Player";
-import { PlayerManagerTypes, numbers as range1_100 } from "../utils";
+import { PlayerManagerTypes, numbers as range1_100, NoTypes } from "../utils";
 
 /**
  * @class
@@ -9,19 +9,32 @@ export default class m extends Manager<Player["id"], Player> {
   async fetch<T extends all | name | id>(
     type: T,
     options: T extends all
-      ? Partial<{ force: boolean; page: number; per_page: range1_100 }>
+      ? { page?: number; amount?: range1_100 }
       : T extends name
-      ? { force?: boolean; page?: number; per_page?: range1_100; name: string }
+      ? { force?: boolean; page?: number; amount?: range1_100; name: string }
       : T extends id
       ? { force?: boolean; id: number }
       : never
   ): Promise<(T extends id ? Player : Player[]) | never> {
-    const force = options?.force;
+
 
     if (["all", 0].includes(type)) {
-      const { data } = await this.request("players");
+      
+      let allArr: { name: string, value: string }[] = []
 
-      console.log(data.length);
+      let newOptions = options as Partial<{ page: number; amount: range1_100 }>
+
+      if (newOptions.page) allArr.push({
+        name: "page",
+        value: newOptions.page.toString()
+      })
+
+      if (newOptions.amount) allArr.push({
+        name: "per_page",
+        value: newOptions.amount.toString()
+      })
+
+      const { data } = await this.request(NoTypes.query("players", allArr));
 
       for (const obj of data) {
         if (!obj || !("id" in obj)) continue;
@@ -30,10 +43,14 @@ export default class m extends Manager<Player["id"], Player> {
 
       return data.map((data: APIPlayer) => new Player(data));
     }
+
+
     if (["id", 2].includes(type) && "id" in options) {
       const id = options.id;
 
       const playerInCache = this.cache.get(id);
+
+      const force = options.force
       if (!force && playerInCache) {
         return playerInCache as T extends id ? Player : Player[];
       }

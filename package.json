@@ -18,7 +18,11 @@
   "homepage": "https://github.com/jacoobes/BallKt#readme",
   "dependencies": {
     "@discordjs/collection": "^0.2.0",
+    "@types/node": "^16.4.13",
     "node-fetch": "^2.6.1",
     "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/node-fetch": "^2.5.12"
   }
 }
