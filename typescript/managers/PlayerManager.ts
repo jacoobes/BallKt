@@ -11,14 +11,14 @@ export default class m extends Manager<Player["id"], Player> {
     options: T extends all
       ? { page?: number; amount?: range1_100 }
       : T extends name
-      ? { force?: boolean; page?: number; amount?: range1_100; name: string }
+      ? { page?: number; amount?: range1_100; name: string }
       : T extends id
       ? { force?: boolean; id: number }
       : never
   ): Promise<(T extends id ? Player : Player[]) | never> {
 
 
-    if (["all", 0].includes(type)) {
+    if (["all", 0, "every"].includes(type)) {
       
       let allArr: { name: string, value: string }[] = []
 
@@ -62,9 +62,34 @@ export default class m extends Manager<Player["id"], Player> {
       return new Player(data) as T extends id ? Player : Player[];
     }
 
-    if (["name", 2].includes(type)) {
-      // todo
-      return new Player({} as APIPlayer) as T extends id ? Player : Player[]
+    if (["name", 1].includes(type) && "name" in options) {
+
+      let allArr: { name: string, value: string }[] = []
+
+      allArr.push({
+        name: "search",
+        value: options.name
+      })
+      
+      if (options.page) allArr.push({
+        name: "page",
+        value: options.page.toString()
+      })
+
+      if (options.amount) allArr.push({
+        name: "per_page",
+        value: options.amount.toString()
+      })
+
+      const { data } = await this.request(NoTypes.query("players", allArr));
+
+      for (const obj of data) {
+        if (!obj || !("id" in obj)) continue;
+        this.cache.set(obj.id, new Player(obj));
+      }
+
+      return data.map((data: APIPlayer) => new Player(data));
+
     }
 
     throw new Error("Wrong type parameters")
