@@ -44,7 +44,7 @@ class Player : BallManager() {
 
     /**
      * List version of fetching many by ids
-     * Works as a cacher and API fetcher
+     * Works as a cacher and API fetcher. Always makes an API call. Searches cache while making API calls.
      * @throws [FuelError]
      */
     suspend fun fetchManyByIDs(ids: Set<Int>): List<PlayerData> = coroutineScope {
@@ -62,7 +62,7 @@ class Player : BallManager() {
 
     /**
      * Range version of fetching many by ids
-     * Works as a cacher and API fetcher
+     * Works as a cacher and API fetcher. Always makes an API call. Searches cache while making API calls.
      * @throws [FuelError]
      * @return List<Deferred<PlayerData>>
      */
