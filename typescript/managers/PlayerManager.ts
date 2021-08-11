@@ -5,7 +5,7 @@ import { PlayerManagerTypes, numbers as range1_100, NoTypes } from "../utils";
 /**
  * @class
  */
-export default class m extends Manager<Player["id"], Player> {
+export default class PlayerManager extends Manager<Player["id"], Player> {
   async fetch<T extends all | name | id>(
     type: T,
     options: T extends all
