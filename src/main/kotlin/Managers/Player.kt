@@ -15,12 +15,12 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Interacting with Player endpoint
  * */
+@Suppress("unused")
 class Player : BallManager() {
 
-    internal val cache = BallCache<Int, PlayerData>(100)
+    internal val cache = BallCache<Int, PlayerData>(60)
     private val playerEndpoint = "${client.basePath}/players"
 
-    @Suppress("unused")
     /**
      * Fetch by ID. Optimized for fetching single requests
      * @param [id] player id
