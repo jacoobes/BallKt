@@ -49,7 +49,7 @@ class Player : BallManager() {
     /**
      * List version of fetching many by ids
      * Works as a cacher and API fetcher
-     * @throws [FuelError] if id is not valid.
+     * @throws [FuelError]
      */
     suspend fun fetchManyByIDs(ids: Set<Int>) : List<PlayerData> = coroutineScope {
             ids.map { id ->
@@ -66,7 +66,7 @@ class Player : BallManager() {
     /**
      * Range version of fetching many by ids
      * Works as a cacher and API fetcher
-     * @throws [FuelError] if id is not valid.
+     * @throws [FuelError]
      */
     suspend fun fetchManyByIDs(ids: IntRange) : List<PlayerData> = coroutineScope {
         ids.map { id ->
