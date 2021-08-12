@@ -64,7 +64,6 @@ class Player : BallManager() {
      * Range version of fetching many by ids
      * Works as a cacher and API fetcher. Always makes an API call. Searches cache while making API calls.
      * @throws [FuelError]
-     * @return List<Deferred<PlayerData>>
      */
     suspend fun fetchManyByIDs(ids: IntRange): List<PlayerData> = coroutineScope {
         ids.map { id ->
@@ -81,7 +80,6 @@ class Player : BallManager() {
             /**
              * @param [name] [String] search string
              * @param [max] [Int] max amount of players displayed
-             * @return [List<PlayerData>]
              */
     fun fetchByName(name: String, max: Int): List<PlayerData> {
         val cachedPlayers = mutableListOf<PlayerData>()

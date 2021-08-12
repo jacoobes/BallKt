@@ -3,8 +3,10 @@ package dev.seren.serializables
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import dev.seren.serializables.game.GameData
 import dev.seren.serializables.meta.MetaData
+import dev.seren.serializables.player.PlayerDataList
 import dev.seren.serializables.team.TeamData
 import java.io.Reader
 
@@ -39,7 +41,10 @@ data class StatsData(
     }
 
     class StatsListDeserializer() : ResponseDeserializable<ListStats> {
-        override fun deserialize(reader: Reader): ListStats = Gson().fromJson(reader, ListStats::class.java)
+        override fun deserialize(reader: Reader): ListStats {
+            val type = object : TypeToken<ListStats>() {}.type
+            return Gson().fromJson(reader, type)
+        }
     }
 
 
