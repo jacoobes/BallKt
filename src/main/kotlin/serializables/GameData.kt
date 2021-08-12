@@ -7,7 +7,6 @@ import kotlinx.serialization.Serializable
 
 
 data class GameData(
-    val statusCode: Int,
     val id : Int,
     val date : String,
     val home_team_score : Int,
