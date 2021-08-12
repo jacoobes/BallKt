@@ -2,6 +2,7 @@ package dev.seren
 
 import dev.seren.Managers.Game
 import dev.seren.Managers.Player
+import dev.seren.Managers.SeasonAverages
 import dev.seren.Managers.Team
 
 /**
@@ -14,5 +15,14 @@ import dev.seren.Managers.Team
      val players = Player()
      val games  = Game()
      val teams = Team()
+     val seasonAverages = SeasonAverages()
+    /**
+     * prints all caches
+     */
+    fun allCaches() {
+        println("Players: ${players.cache}")
+        println("Games ${games.cache}")
+        println("Teams : ${teams.cache}")
+    }
 
 }

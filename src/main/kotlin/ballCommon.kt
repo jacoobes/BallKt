@@ -11,8 +11,7 @@ import kotlinx.coroutines.runBlocking
 suspend fun main()  {
     val client = BallClient()
 
-    val test = client.teams.fetchAllTeams()
-    println(client.teams.cache.size)
+
 
 }
 
