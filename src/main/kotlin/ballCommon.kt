@@ -11,7 +11,7 @@ import kotlinx.coroutines.runBlocking
 suspend fun main()  {
     val client = BallClient()
 
-    println(client.seasonAverages.fetchById(237, season = 2020))
+
 
 }
 
