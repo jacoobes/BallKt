@@ -25,6 +25,7 @@ class SeasonAverages: BallManager() {
      * season default is current year
      */
     fun fetchById(playerId: Int, season: Int = Year.now().value) : SeasonAvgData {
+        if(cache hasKey playerId) return cache[playerId]
         constructQuery(
             season = season,
             playerId
