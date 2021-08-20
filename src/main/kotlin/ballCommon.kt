@@ -11,7 +11,10 @@ import kotlinx.coroutines.runBlocking
 suspend fun main()  {
     val client = BallClient()
 
-
+    client.players.fetchManyByIDs(1..10)
+   val list = client.players.cache.findAll {
+        it.first_name.startsWith("La")
+    }
 
 }
 

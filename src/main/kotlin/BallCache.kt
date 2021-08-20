@@ -59,11 +59,12 @@ class BallCache<T, V>(maxSize: Int) : Cache<T, V> {
     }
     inline fun find( condition : (V) -> Boolean ) : V? = values.find(condition)
 
-    inline fun MutableList<V>.findAll(condition: (V) -> Boolean) : List<V> {
-        for(element in this) {
-            if(condition(element)) add(element)
+    inline fun findAll(condition: (V) -> Boolean) : List<V> {
+        val list = mutableListOf<V>()
+        for(element in values) {
+            if(condition(element)) list.add(element)
         }
-        return this
+        return list
     }
 
     override fun toString(): String = cache.toString()
