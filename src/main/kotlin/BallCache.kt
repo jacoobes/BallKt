@@ -66,6 +66,7 @@ class BallCache<T, V>(maxSize: Int) : Cache<T, V> {
         }
         return list
     }
-
+    fun random() : V = values.random()
+    
     override fun toString(): String = cache.toString()
 }
