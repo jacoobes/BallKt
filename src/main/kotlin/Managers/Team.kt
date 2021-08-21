@@ -5,6 +5,7 @@ import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import dev.seren.BallCache
 import dev.seren.serializables.team.TeamData
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
@@ -48,7 +49,7 @@ class Team : BallManager() {
             .awaitResponse(TeamData.ListDeserializer()).third.data
 
         coroutineScope {
-            launch {
+            launch(Dispatchers.Main){
                 listOfAllTeams.forEach { team ->
                     cache[team.id] = team
                 }

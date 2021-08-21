@@ -4,6 +4,10 @@ import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import dev.seren.BallCache
 import dev.seren.serializables.SeasonAvgData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.Year
 
 class SeasonAverages: BallManager() {
@@ -41,6 +45,28 @@ class SeasonAverages: BallManager() {
             }.join()
             return cache[playerId]
 
+    }
+
+    /**
+     * Always fetches from API. Caches all results
+     */
+
+    suspend fun fetchMultiple(ids: IntArray, season: Int = Year.now().value) = coroutineScope {
+
+       val list = withContext(Dispatchers.Default) {
+            constructQuery(season = season, playerIds = ids)
+                .httpGet()
+                .responseObject(SeasonAvgData.ListDeserialize())
+                .third.get().data
+        }
+
+        launch {
+            list.forEach {
+                cache[it.player_id] = it
+            }
+        }
+
+        return@coroutineScope list
     }
 
     
