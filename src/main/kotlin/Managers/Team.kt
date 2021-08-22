@@ -12,7 +12,6 @@ import kotlinx.coroutines.launch
 
 @Suppress("unused")
 class Team : BallManager() {
-    private val teamEndpoint = "${client.basePath}/teams"
     internal val cache = BallCache<Int, TeamData>(30)
 
     /**
@@ -27,7 +26,7 @@ class Team : BallManager() {
      */
     fun fetchByID(id: Int): TeamData? {
         if (cache hasKey id) return cache[id]
-        "$teamEndpoint/$id"
+        "$basePath/teams/$id"
             .httpGet()
             .responseObject(TeamData.Deserializer()) { _, _, result ->
                 when (result) {
@@ -44,7 +43,7 @@ class Team : BallManager() {
     }
 
     suspend fun fetchAllTeams(): List<TeamData> {
-        val listOfAllTeams = teamEndpoint
+        val listOfAllTeams = "$basePath/teams"
             .httpGet()
             .awaitResponse(TeamData.ListDeserializer()).third.data
 

@@ -1,5 +1,7 @@
 package dev.seren.serializables.game
+import dev.seren.Managers.Game
 import dev.seren.serializables.baseSerializable
+import dev.seren.serializables.meta.MetaData
 import dev.seren.serializables.team.TeamData
 import kotlinx.serialization.Serializable
 
@@ -21,4 +23,8 @@ data class GameData(
 
 ): baseSerializable()
 
+data class GameDataList(
+    val data: List<GameData>,
+    val meta : MetaData
+)
 

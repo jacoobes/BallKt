@@ -15,7 +15,7 @@ import kotlinx.coroutines.*
 class Player : BallManager() {
 
     internal val cache = BallCache<Int, PlayerData>(60)
-    private val playerEndpoint = "${client.basePath}/players"
+
 
     /**
      * Fetch by ID. Optimized for fetching single requests
@@ -25,7 +25,7 @@ class Player : BallManager() {
     fun fetchById(id: Int): PlayerData? {
 
         if (cache hasKey id) return cache[id]
-        "$playerEndpoint/$id"
+        "$basePath/players/$id"
             .httpGet()
             .responseObject(PlayerData.Deserializer()) { _, _, result ->
                 when (result) {
@@ -52,7 +52,7 @@ class Player : BallManager() {
         ids.map { id ->
             async(Dispatchers.IO) {
                 if (cache hasKey id) cache[id]
-                else "$playerEndpoint/$id".httpGet().responseObject(PlayerData.Deserializer()).third.get()
+                else "$basePath/players/$id".httpGet().responseObject(PlayerData.Deserializer()).third.get()
                     .also {
                         cache[id] = it
                     }
@@ -69,7 +69,7 @@ class Player : BallManager() {
         ids.map { id ->
             async(Dispatchers.IO) {
                 if (cache hasKey id) cache[id]
-                else "$playerEndpoint/$id".httpGet().responseObject(PlayerData.Deserializer()).third.get()
+                else "$basePath/players/$id".httpGet().responseObject(PlayerData.Deserializer()).third.get()
                     .also {
                         cache[id] = it
                     }
@@ -89,7 +89,7 @@ class Player : BallManager() {
          * else adds json data and adds cache data
          */
 
-        "$playerEndpoint/?search=$name?per_page=$max"
+        "$basePath/players/?search=$name?per_page=$max"
             .httpGet()
             .responseObject(PlayerData.ListDeserializer()) { _, _, result ->
                 when (result) {

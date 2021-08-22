@@ -12,11 +12,10 @@ import java.time.Year
 
 class SeasonAverages: BallManager() {
     internal val cache = BallCache<Int, SeasonAvgData>(50)
-    private val seasonAvgEndpoint = "${client.basePath}/season_averages"
 
     private fun constructQuery(season: Int = Year.now().value, vararg playerIds :Int ) : String {
         return buildString {
-            append(seasonAvgEndpoint)
+            append("$basePath/season_averages")
             append("?season=$season")
             for (id in playerIds ) {
                 append("&player_ids[]=$id")
@@ -50,7 +49,6 @@ class SeasonAverages: BallManager() {
     /**
      * Always fetches from API. Caches all results
      */
-
     suspend fun fetchMultiple(ids: IntArray, season: Int = Year.now().value) = coroutineScope {
 
        val list = withContext(Dispatchers.Default) {

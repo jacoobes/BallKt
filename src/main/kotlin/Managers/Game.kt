@@ -13,8 +13,12 @@ import kotlinx.coroutines.Deferred
  * */
 class Game : BallManager() {
 
-    internal val cache = BallCache<String, GameData>(60)
+    internal val cache = BallCache<Int, GameData>(60)
 
 
+
+    private fun constructQuery(): String {
+        return basePath
+    }
 
 }

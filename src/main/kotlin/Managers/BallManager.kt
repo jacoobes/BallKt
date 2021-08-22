@@ -16,9 +16,17 @@ import com.github.kittinunf.fuel.httpGet
 
  sealed class BallManager {
 
-   protected open val client = FuelManager.instance.apply {
+   protected val client = FuelManager.instance.apply {
        basePath = "https://www.balldontlie.io/api/v1"
    }
+
+    /**
+     * https://www.balldontlie.io/api/v1
+     */
+   protected open val basePath = client.basePath!!
+
+
+
 
 }
 
