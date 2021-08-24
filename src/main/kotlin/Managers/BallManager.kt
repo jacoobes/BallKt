@@ -25,14 +25,6 @@ import com.github.kittinunf.fuel.httpGet
      */
    protected open val basePath = client.basePath!!
 
-    /**
-     * Used to help aid in making complex endpoints without hard coding it
-     */
-   private inline fun String.asBaseUrl( action : StringBuilder.() -> Unit ) : String {
-        val builder = StringBuilder()
-        action(builder.append(this))
-        return builder.toString()
-    }
 
 
 }
