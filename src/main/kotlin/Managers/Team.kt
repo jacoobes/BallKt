@@ -24,22 +24,17 @@ class Team : BallManager() {
      * @param [id] player id
      * @return [TeamData?]
      */
-    fun fetchByID(id: Int): TeamData? {
+    fun fetchByID(id: Int): TeamData {
         if (cache hasKey id) return cache[id]
         "$basePath/teams/$id"
             .httpGet()
             .responseObject(TeamData.Deserializer()) { _, _, result ->
                 when (result) {
-                    is Result.Success -> {
-                        val team = result.get()
-                        cache[team.id] = team
-                    }
-                    is Result.Failure -> {
-                        throw result.getException()
-                    }
+                    is Result.Success -> cache[id] = result.get()
+                    is Result.Failure ->  throw result.getException()
                 }
             }.join()
-        return if (cache hasKey id) cache[id] else null
+        return cache[id]
     }
 
     suspend fun fetchAllTeams(): List<TeamData> {

@@ -35,11 +35,10 @@ class SeasonAverages: BallManager() {
         )
             .httpGet()
             .responseObject(SeasonAvgData.ListDeserialize()) { result ->
-
                 val res = result.get().data[0]
                 when(result) {
                     is Result.Failure -> throw result.getException()
-                    is Result.Success -> cache[res.player_id] = res
+                    is Result.Success -> cache[playerId] = res
                 }
             }.join()
             return cache[playerId]
