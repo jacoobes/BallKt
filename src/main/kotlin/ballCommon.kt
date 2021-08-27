@@ -11,7 +11,7 @@ import kotlinx.coroutines.runBlocking
 suspend fun main()  {
     val client = BallClient()
 
-
+   println(client.games.isValidDate("2099-10-16"))
 }
 
 
