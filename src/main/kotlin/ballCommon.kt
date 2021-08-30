@@ -8,10 +8,10 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
 
-suspend fun main()  {
+fun main()  {
     val client = BallClient()
 
-   println(client.games.isValidDate("2099-10-16"))
+println(client.players.fetchById(1211434221))
 }
 
 

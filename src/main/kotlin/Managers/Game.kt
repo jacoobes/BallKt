@@ -2,8 +2,11 @@ package dev.seren.Managers
 
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
+import com.google.gson.Gson
 import dev.seren.BallCache
 import dev.seren.serializables.game.GameData
+import dev.seren.serializables.player.PlayerData
+import dev.seren.serializables.team.TeamData
 import kotlinx.coroutines.flow.Flow
 import java.text.SimpleDateFormat
 
@@ -13,18 +16,14 @@ import java.text.SimpleDateFormat
 class Game : BallManager() {
 
     internal val cache = BallCache<Int, GameData>(60)
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd")
-    fun fetchById(id: Int) : GameData {
+
+    fun fetchById(id: Int) : GameData? {
         if(cache hasKey id) return cache[id]
-        "${basePath}/games/$id"
-            .httpGet()
-            .responseObject(GameData.Deserializer()) { result ->
-                when(result) {
-                    is Result.Success -> cache[id] = result.get()
-                    is Result.Failure -> throw result.getException()
-                }
-            }.join()
-        return cache[id]
+        fetch("${basePath}/games/$id") {
+            val data = Gson().fromJson(this, GameData::class.java)
+            cache[id] = data
+        }
+        return if(cache hasKey id) cache[id] else null
     }
 
     /**
