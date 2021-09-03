@@ -6,6 +6,7 @@ import com.github.kittinunf.result.Result
 import com.google.gson.Gson
 import dev.seren.BallCache
 import dev.seren.serializables.player.PlayerData
+import dev.seren.serializables.player.PlayerDataList
 import dev.seren.serializables.team.TeamData
 import io.ktor.utils.io.core.*
 import kotlinx.coroutines.*
@@ -24,7 +25,7 @@ class Player : BallManager() {
      * @param [id] player id
      * @return [PlayerData?]
      */
-    fun fetchById(id: Int) : PlayerData?  {
+    fun fetchById(id: Int): PlayerData? {
 
         if (cache hasKey id) return cache[id]
 
@@ -34,48 +35,13 @@ class Player : BallManager() {
             cache[id] = data
 
         }
-        return if(cache hasKey id) cache[id] else null
+        return if (cache hasKey id) cache[id] else null
     }
 
     /**
-     * List version of fetching many by ids
-     * Works as a cacher and API fetcher. Always makes an API call. Searches cache while making API calls.
-     * @throws [FuelError]
+     * @param [name] [String] search string
+     * @param [max] [Int] max amount of players displayed
      */
-    suspend fun fetchManyByIDs(ids: Set<Int>): List<PlayerData> = coroutineScope {
-
-        ids.map { id ->
-            async(Dispatchers.IO) {
-                if (cache hasKey id) cache[id]
-                else "$basePath/players/$id".httpGet().responseObject(PlayerData.Deserializer()).third.get()
-                    .also {
-                        cache[id] = it
-                    }
-            }
-        }.awaitAll()
-    }
-
-    /**
-     * Range version of fetching many by ids
-     * Works as a cacher and API fetcher. Always makes an API call. Searches cache while making API calls.
-     * @throws [FuelError]
-     */
-    suspend fun fetchManyByIDs(ids: IntRange): List<PlayerData> = coroutineScope {
-        ids.map { id ->
-            async(Dispatchers.IO) {
-                if (cache hasKey id) cache[id]
-                else "$basePath/players/$id".httpGet().responseObject(PlayerData.Deserializer()).third.get()
-                    .also {
-                        cache[id] = it
-                    }
-            }
-        }.awaitAll()
-    }
-
-            /**
-             * @param [name] [String] search string
-             * @param [max] [Int] max amount of players displayed
-             */
     fun fetchByName(name: String, max: Int): List<PlayerData> {
         val cachedPlayers = mutableListOf<PlayerData>()
 
@@ -84,26 +50,22 @@ class Player : BallManager() {
          * else adds json data and adds cache data
          */
 
-        "$basePath/players/?search=$name?per_page=$max"
-            .httpGet()
-            .responseObject(PlayerData.ListDeserializer()) { _, _, result ->
-                when (result) {
-                    is Result.Success -> {
+        fetch("$basePath/players/?search=$name?per_page=$max") {
+            val response: PlayerDataList = Gson().fromJson(this, PlayerDataList::class.java)
 
-                        result.get().data.forEach {
-                            if (cache hasKey it.id) {
-                                cache[it.id].let { player -> cachedPlayers.add(player) }
-                            } else {
-                                cachedPlayers.add(it)
-                                cache[it.id] = it
-                            }
+            response.data.forEach {
+                if(cache hasKey it.id) {
+                    cache[it.id].let { playerData ->
+                        if (playerData != null) {
+                            cachedPlayers.add(playerData)
                         }
-
                     }
-                    is Result.Failure -> throw result.getException()
-
+                } else {
+                    cachedPlayers.add(it)
+                    cache[it.id] = it
                 }
-            }.join()
+            }
+        }
 
         return cachedPlayers
     }

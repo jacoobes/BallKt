@@ -8,10 +8,9 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
 
-fun main()  {
+suspend fun main()  {
     val client = BallClient()
 
-println(client.players.fetchById(1211434221))
 }
 
 
