@@ -24,19 +24,18 @@ sealed class BallManager {
     protected open val basePath = client.basePath!!
 
     protected inline fun <T> fetch(url: String, crossinline withAction: String.() -> T?) : T? {
-
+    var response : T? = null
         url.httpGet()
-            .responseString { result ->
+           .responseString { result ->
                 when (result) {
                     is Result.Success -> {
-                        result.get().withAction()
+                       response =  result.get().withAction()
                     }
                     is Result.Failure -> println("Bad Request!")
                 }
+           }.join()
 
-            }.join()
-
-        return null
+        return response
     }
 
 }

@@ -38,29 +38,23 @@ class Team : BallManager() {
         }
     }
 
-    suspend fun fetchAllTeams(): List<TeamData> {
+    /**
+     * @return emptyList or data
+     */
 
-        fetch("$basePath/teams") {
+        fun fetchAllTeams(): List<TeamData> {
+
+        return fetch("$basePath/teams") {
             val type = object : TypeToken<TeamDataList>() {}.type
             val response: TeamDataList = Gson().fromJson(this, type)
 
             response.data.forEach { team ->
                 cache[team.id] = team
             }
+           return@fetch response.data
+        } ?: emptyList()
 
-        }
-        val listOfAllTeams = "$basePath/teams"
-            .httpGet()
-            .awaitResponse(TeamData.ListDeserializer()).third.data
 
-        coroutineScope {
-            launch(Dispatchers.Main){
-                listOfAllTeams.forEach { team ->
-                    cache[team.id] = team
-                }
-            }
-        }
-        return listOfAllTeams
     }
 
 }
