@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.Error
 import java.time.Year
-
+@Suppress("unused")
 class SeasonAverages : BallManager() {
     internal val cache = BallCache<Int, SeasonAvgData>(50)
 
@@ -34,15 +34,14 @@ class SeasonAverages : BallManager() {
     fun fetchById(playerId: Int, season: Int = Year.now().value): SeasonAvgData? {
         if (cache hasKey playerId) return cache[playerId]
 
-        fetch("$basePath/season_averages?season=$season&player_ids[]=$playerId") {
+      return fetch("$basePath/season_averages?season=$season&player_ids[]=$playerId") {
             val type = object : TypeToken<SeasonAvgDataList>() {}.type
             val response = Gson().fromJson<SeasonAvgDataList>(this, type).data[0]
-
             cache[playerId] = response
 
-
+            return@fetch response
         }
-        return if (cache hasKey playerId) cache[playerId] else null
+
     }
 
     /**

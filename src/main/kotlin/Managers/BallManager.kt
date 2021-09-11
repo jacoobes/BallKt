@@ -1,21 +1,8 @@
 package dev.seren.Managers
 
-import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.core.*
-import com.github.kittinunf.fuel.core.requests.CancellableRequest
-import com.github.kittinunf.fuel.gson.responseObject
-
+import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
-import com.github.kittinunf.result.getOrElse
-import com.github.kittinunf.result.getOrNull
-import dev.seren.serializables.baseSerializable
-import dev.seren.serializables.game.GameData
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
-import kotlin.reflect.KClass
-import kotlin.system.exitProcess
 
 
 /**
@@ -24,35 +11,35 @@ import kotlin.system.exitProcess
  *
  */
 
- sealed class BallManager {
+sealed class BallManager {
 
-   protected val client = FuelManager.instance.apply {
-       basePath = "https://www.balldontlie.io/api/v1"
-   }
+    protected val client = FuelManager.instance.apply {
+        basePath = "https://www.balldontlie.io/api/v1"
+    }
 
 
     /**
      * https://www.balldontlie.io/api/v1
      */
-   protected open val basePath = client.basePath!!
+    protected open val basePath = client.basePath!!
 
-   protected inline fun fetch(url : String, crossinline withAction : String.() -> Unit)  {
+    protected inline fun <T> fetch(url: String, crossinline withAction: String.() -> T?) : T? {
 
-       url
-            .httpGet()
+        url.httpGet()
             .responseString { result ->
-                when(result) {
+                when (result) {
                     is Result.Success -> {
-                           result.get().withAction()
+                        result.get().withAction()
                     }
-
+                    is Result.Failure -> println("Bad Request!")
                 }
 
             }.join()
 
-       }
+        return null
+    }
 
- }
+}
 
 
 

@@ -10,6 +10,7 @@ import kotlinx.coroutines.runBlocking
 
 suspend fun main()  {
     val client = BallClient()
+    println(client.games.fetchById(231443123))
 
 }
 
