@@ -1,10 +1,5 @@
 package dev.seren.serializables
 
-import com.github.kittinunf.fuel.core.ResponseDeserializable
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import java.io.Reader
-
 
 data class SeasonAvgData(
  val games_played : Int,
@@ -30,22 +25,5 @@ data class SeasonAvgData(
  val fg3_pct : Double,
  val ft_pct :  Double
 
-) {
-
- class Deserialize: ResponseDeserializable<SeasonAvgData> {
-  override fun deserialize(reader: Reader): SeasonAvgData = Gson().fromJson(reader, SeasonAvgData::class.java)
-
-
- }
- class ListDeserialize : ResponseDeserializable<SeasonAvgDataList> {
-  override fun deserialize(reader: Reader): SeasonAvgDataList {
-   val type =  object : TypeToken<SeasonAvgDataList>() {}.type
-   return Gson().fromJson(reader, type)!!
-  }
-
- }
-
-
-
-}
+)
 data class SeasonAvgDataList(val data: List<SeasonAvgData>)
