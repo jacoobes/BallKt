@@ -26,8 +26,9 @@ class Player : BallManager() {
         if (cache hasKey id) return cache[id]
 
         return fetch("$basePath/players/$id") {
-            val data = Gson().fromJson(this, PlayerData::class.java)
+            val data = gson.fromJson(this, PlayerData::class.java)
             cache[id] = data
+
             return@fetch data
         }
     }
@@ -40,8 +41,7 @@ class Player : BallManager() {
 
         return fetch("$basePath/players?search=$name&per_page=$max") {
             val type = object : TypeToken<PlayerDataList>() {}.type
-
-            val ( data ) = Gson().fromJson<PlayerDataList>(this, type)
+            val ( data ) = gson.fromJson<PlayerDataList>(this, type)
 
             return@fetch data.onEach { player -> cache[player.id] = player }
         } ?: emptyList()

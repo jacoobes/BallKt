@@ -36,8 +36,9 @@ class SeasonAverages : BallManager() {
 
       return fetch("$basePath/season_averages?season=$season&player_ids[]=$playerId") {
             val type = object : TypeToken<SeasonAvgDataList>() {}.type
-            val data = Gson().fromJson<SeasonAvgDataList>(this, type).data[0]
+            val data = gson.fromJson<SeasonAvgDataList>(this, type).data[0]
             cache[playerId] = data
+
             return@fetch data
         }
 
@@ -55,7 +56,7 @@ class SeasonAverages : BallManager() {
             )
         ) {
             val type = object : TypeToken<SeasonAvgDataList>(){}.type
-            val ( data ) = Gson().fromJson<SeasonAvgDataList>(this, type)
+            val ( data ) = gson.fromJson<SeasonAvgDataList>(this, type)
 
             return@fetch data.onEach { cache[it.player_id] = it }
         } ?: emptyList()

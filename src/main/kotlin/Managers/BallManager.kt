@@ -3,6 +3,7 @@ package dev.seren.Managers
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
+import com.google.gson.Gson
 
 
 /**
@@ -12,8 +13,8 @@ import com.github.kittinunf.result.Result
  */
 
 sealed class BallManager {
-
-    protected val client = FuelManager.instance.apply {
+    protected val gson = Gson()
+    private val client = FuelManager.instance.apply {
         basePath = "https://www.balldontlie.io/api/v1"
     }
 

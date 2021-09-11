@@ -2,7 +2,6 @@ package dev.seren.Managers
 
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
-import com.google.gson.Gson
 import dev.seren.BallCache
 import dev.seren.serializables.game.GameData
 import dev.seren.serializables.player.PlayerData
@@ -26,7 +25,7 @@ class Game : BallManager() {
       if(cache hasKey id) return cache[id]
 
       return fetch("${basePath}/games/$id") {
-            val data = Gson().fromJson(this, GameData::class.java)
+            val data = gson.fromJson(this, GameData::class.java)
             cache[id] = data
 
             return@fetch data
