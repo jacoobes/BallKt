@@ -41,17 +41,13 @@ class Team : BallManager() {
     /**
      * @return emptyList or data
      */
-
         fun fetchAllTeams(): List<TeamData> {
 
         return fetch("$basePath/teams") {
             val type = object : TypeToken<TeamDataList>() {}.type
-            val response: TeamDataList = Gson().fromJson(this, type)
+            val ( data ) = Gson().fromJson<TeamDataList>(this, type)
 
-            response.data.forEach { team ->
-                cache[team.id] = team
-            }
-           return@fetch response.data
+           return@fetch data.onEach { team -> cache[team.id] = team }
         } ?: emptyList()
 
 

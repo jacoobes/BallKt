@@ -36,10 +36,9 @@ class SeasonAverages : BallManager() {
 
       return fetch("$basePath/season_averages?season=$season&player_ids[]=$playerId") {
             val type = object : TypeToken<SeasonAvgDataList>() {}.type
-            val response = Gson().fromJson<SeasonAvgDataList>(this, type).data[0]
-            cache[playerId] = response
-
-            return@fetch response
+            val data = Gson().fromJson<SeasonAvgDataList>(this, type).data[0]
+            cache[playerId] = data
+            return@fetch data
         }
 
     }
@@ -47,22 +46,23 @@ class SeasonAverages : BallManager() {
     /**
      * Always fetches from API. Caches all results
      */
-    suspend fun fetchMultiple(ids: IntArray, season: Int = Year.now().value) = coroutineScope {
+     fun fetchMultiple(ids: IntArray, season: Int = Year.now().value) : List<SeasonAvgData> {
 
-        val list = withContext(Dispatchers.Default) {
-            constructQuery(season = season, playerIds = ids)
-                .httpGet()
-                .responseObject(SeasonAvgData.ListDeserialize())
-                .third.get().data
-        }
+     return fetch(
+            constructQuery(
+                season = season,
+                playerIds = ids
+            )
+        ) {
+            val type = object : TypeToken<SeasonAvgDataList>(){}.type
+            val ( data ) = Gson().fromJson<SeasonAvgDataList>(this, type)
 
-        launch {
-            list.forEach {
-                cache[it.player_id] = it
-            }
-        }
+            return@fetch data.onEach { cache[it.player_id] = it }
+        } ?: emptyList()
 
-        return@coroutineScope list
+
+
+
     }
 
 

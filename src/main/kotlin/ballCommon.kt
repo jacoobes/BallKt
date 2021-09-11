@@ -3,10 +3,10 @@ package dev.seren.common.test
 
 import dev.seren.BallClient
 
-suspend fun main() {
+ fun main() {
     val client = BallClient()
-    println(client.teams.fetchAllTeams())
 
+    println( client.seasonAverages.fetchMultiple(intArrayOf(237, 100), 2011)  )
 
 }
 
