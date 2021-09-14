@@ -3,10 +3,11 @@ package dev.seren.common.test
 
 import dev.seren.BallClient
 
+//inline fun <T> T.onlyIf( boolean: T.() -> Boolean  ) : T? = if(boolean()) this else null
+
  fun main() {
     val client = BallClient()
 
-    println( client.seasonAverages.fetchMultiple(intArrayOf(237, 100), 2011)  )
-
+    client.seasonAverages.fetchById(10)
 }
 
