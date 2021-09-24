@@ -57,8 +57,13 @@ class SeasonAverages : BallManager() {
         ) {
             val type = object : TypeToken<SeasonAvgDataList>(){}.type
             val ( data ) = gson.fromJson<SeasonAvgDataList>(this, type)
+                .also { (data) ->
+                    data.forEach { sznAvg ->
+                        cache[sznAvg.player_id] = sznAvg
+                    }
+                }
 
-            return@fetch data.onEach { cache[it.player_id] = it }
+            return@fetch data
         } ?: emptyList()
 
 

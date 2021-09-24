@@ -5,9 +5,8 @@ import dev.seren.BallClient
 
 //inline fun <T> T.onlyIf( boolean: T.() -> Boolean  ) : T? = if(boolean()) this else null
 
- fun main() {
+ suspend fun main() {
     val client = BallClient()
-
-    client.seasonAverages.fetchById(10)
+    println(client.games.fetchByDate("2020-08-10"))
 }
 

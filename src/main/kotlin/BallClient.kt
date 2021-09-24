@@ -1,9 +1,6 @@
 package dev.seren
 
-import dev.seren.Managers.Game
-import dev.seren.Managers.Player
-import dev.seren.Managers.SeasonAverages
-import dev.seren.Managers.Team
+import dev.seren.Managers.*
 
 /**
 *  Base interaction class for interactions with the API.

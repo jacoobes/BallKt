@@ -42,8 +42,13 @@ class Player : BallManager() {
         return fetch("$basePath/players?search=$name&per_page=$max") {
             val type = object : TypeToken<PlayerDataList>() {}.type
             val ( data ) = gson.fromJson<PlayerDataList>(this, type)
+                .also { (data) ->
+                    data.forEach { player ->
+                        cache[player.id] = player
+                    }
+                }
 
-            return@fetch data.onEach { player -> cache[player.id] = player }
+            return@fetch data
         } ?: emptyList()
     }
 
