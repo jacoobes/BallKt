@@ -1,6 +1,5 @@
 package dev.seren.Managers
 
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dev.seren.BallCache
 import dev.seren.serializables.player.PlayerData
@@ -23,9 +22,8 @@ class Player : BallManager() {
      */
     fun fetchById(id: Int): PlayerData? {
 
-        if (cache hasKey id) return cache[id]
-
-        return fetch("$basePath/players/$id") {
+        return if (cache hasKey id) cache[id]
+        else return fetch("$basePath/players/$id") {
             val data = gson.fromJson(this, PlayerData::class.java)
             cache[id] = data
 

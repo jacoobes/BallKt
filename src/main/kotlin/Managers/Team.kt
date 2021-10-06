@@ -1,16 +1,9 @@
 package dev.seren.Managers
 
-import com.github.kittinunf.fuel.core.awaitResponse
-import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.result.Result
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dev.seren.BallCache
 import dev.seren.serializables.team.TeamData
 import dev.seren.serializables.team.TeamDataList
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 
 
 @Suppress("unused")
@@ -28,9 +21,8 @@ class Team : BallManager() {
      * @return [TeamData?]
      */
     fun fetchByID(id: Int): TeamData? {
-        if (cache hasKey id) return cache[id]
-
-        return fetch("$basePath/teams/$id") {
+        return if (cache hasKey id) cache[id]
+        else fetch("$basePath/teams/$id") {
             val data = gson.fromJson(this, TeamData::class.java)
             cache[id] = data
 

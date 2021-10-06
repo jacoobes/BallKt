@@ -1,23 +1,10 @@
 package dev.seren.Managers
 
-import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.result.Result
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dev.seren.BallCache
 import dev.seren.serializables.game.GameData
 import dev.seren.serializables.game.GameDataList
-import dev.seren.serializables.player.PlayerData
-import dev.seren.serializables.team.TeamData
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.concurrent.CancellationException
 
 /**
  * Interacting with Game endpoint
@@ -42,9 +29,8 @@ class Game : BallManager() {
 
 
     fun fetchById(id: Int) : GameData? {
-      if(cache hasKey id) return cache[id]
-
-      return fetch("${basePath}/games/$id") {
+        return if (cache hasKey id) cache[id]
+        else fetch("${basePath}/games/$id") {
             val data = gson.fromJson(this, GameData::class.java)
             cache[id] = data
 
@@ -59,11 +45,11 @@ class Game : BallManager() {
     fun fetchByDate(date: String = today) : List<GameData>? {
         return fetch("$basePath/games?dates[]=$date") {
             val type = object : TypeToken<GameDataList>(){}.type
-            val ( data ) = Gson().fromJson<GameDataList>(this, type)
+            val (data) = gson.fromJson<GameDataList>(this, type)
                 .also { (data) ->
-                     data.forEach {
-                         cache[it.id] = it
-                     }
+                    data.forEach {
+                        cache[it.id] = it
+                    }
                 }
 
             return@fetch data
